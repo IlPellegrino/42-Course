@@ -6,52 +6,51 @@
 /*   By: nromito <nromito@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 12:08:38 by nromito           #+#    #+#             */
-/*   Updated: 2023/12/13 17:37:06 by nromito          ###   ########.fr       */
+/*   Updated: 2023/12/20 19:31:54 by nromito          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	find_newline(char *s, int c)
+int	find_newline(char *s)
 {
 	int	i;
 
 	i = 0;
 	if (s == NULL)
 		return (0);
-	while (s[i])
-	{
-		if (s[i] == c)
-			return (++i);
+	while (s[i] != '\0' && s[i] != '\n')
 		i++;
-	}
-	return (0);
+	if(s[i] == '\n')
+		i++;
+	return (i);
 }
 
-char	*str_join_mod(char *s1, char *s2)
+char	*str_join_mod(char *str, char *buf)
 {
 	char	*join;
 	size_t	len1;
 	size_t	len2;
 	size_t	i;
 
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
+	len1 = ft_strlen(str);
+	len2 = ft_strlen(buf);
 	join = ft_calloc(len1 + len2 + 1, 1);
 	if (join == NULL)
 		return (NULL);
 	i = -1;
-	if (s1 == NULL)
+	if (str == NULL)
 	{
-		while (s2[++i])
-			join[len1++] = s2[i];
+		while (buf[++i])
+			join[len1++] = buf[i];
 		return (join);
 	}
-	while (s1[++i])
-		join[i] = s1[i];
+	while (str[++i])
+		join[i] = str[i];
 	i = -1;
-	while (s2[++i])
-		join[len1++] = s2[i];
+	while (buf[++i])
+		join[len1++] = buf[i];
+	// str = NULL;
 	return (join);
 }
 
@@ -60,8 +59,8 @@ size_t len_str(char *s)
 	size_t	i;
 
 	i = 0;
-	if (s == 0)
-		return (i);
+	if (s == NULL)
+		return (0);
 	while(s[i] != '\0' && s[i] != '\n')
 		i++;
 	return(i);
@@ -79,38 +78,35 @@ size_t	ft_strlen(char *s)
 	return (i);
 }
 
-char	*str_dup_mod(char *s, int idx)
+char	*str_dup_mod(char *raw_str, int idx)
 {
 	char			*st;
 	int				i;
 
-	st = ft_calloc(idx + 2, 1);
+	st = ft_calloc(idx + 1, sizeof(char));
 	if (!st)
 		return (NULL);
 	i = 0;
-	while (i <= idx)
+	while (i < idx)
 	{
-		st[i] = s[i];
+		st[i] = raw_str[i];
 		i++;
 	}
 	return (st);
 }
 
-char	*ft_strdup(char *s)
+char	*ft_strdup(char *raw_str)
 {
 	char			*st;
 	unsigned int	i;
 
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	st = malloc(sizeof(char) * i + 1);
+	st = ft_calloc(ft_strlen(raw_str) + 1, 1);
 	if (!st)
 		return (NULL);
 	i = 0;
-	while (s[i] != '\0')
+	while (raw_str[i] != '\0')
 	{
-		st[i] = s[i];
+		st[i] = raw_str[i];
 		i++;
 	}
 	st[i] = '\0';
