@@ -6,7 +6,7 @@
 /*   By: nromito <nromito@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 12:08:38 by nromito           #+#    #+#             */
-/*   Updated: 2023/12/20 19:31:54 by nromito          ###   ########.fr       */
+/*   Updated: 2023/12/21 14:41:32 by nromito          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ char	*str_join_mod(char *str, char *buf)
 	i = -1;
 	while (buf[++i])
 		join[len1++] = buf[i];
-	// str = NULL;
 	return (join);
 }
 
@@ -82,8 +81,12 @@ char	*str_dup_mod(char *raw_str, int idx)
 {
 	char			*st;
 	int				i;
+	int				j;
 
-	st = ft_calloc(idx + 1, sizeof(char));
+	j = 1;
+	if (!raw_str[0])
+		j = 0;
+	st = ft_calloc(idx + j, sizeof(char));
 	if (!st)
 		return (NULL);
 	i = 0;
@@ -110,6 +113,11 @@ char	*ft_strdup(char *raw_str)
 		i++;
 	}
 	st[i] = '\0';
+	// if (!st[0])
+	// {
+	// 	free (st);
+	// 	return (NULL);
+	// }
 	return (st);
 }
 
