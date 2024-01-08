@@ -6,7 +6,7 @@
 /*   By: nromito <nromito@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 15:58:47 by nromito           #+#    #+#             */
-/*   Updated: 2024/01/01 17:20:15 by nromito          ###   ########.fr       */
+/*   Updated: 2024/01/08 10:26:25 by nromito          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,9 @@ char	*steal_line(char *str)
 	pass = 0;
 	if (str == NULL || str[0] == '\0')
 		return (NULL);
-	while (str[pass] != '\n' && str[pass] != '\n')
+	while (str[pass] != '\n' && str[pass] != '\0')
 		pass++;
-	temp = ft_calloc(pass + 1, sizeof(char));
+	temp = ft_calloc(pass + 1 + '\n', sizeof(char));
 	if (!temp)
 		return (NULL);
 	if (str[pass] == '\n')
@@ -149,6 +149,7 @@ char	*get_next_line(int fd)
 // 		free(risultato);
 // 		i++;	
 // 	}
+// 	free (risultato);
 // 	close (fd);
 // 	return (0);
 // }
