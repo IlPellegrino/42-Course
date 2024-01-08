@@ -5,120 +5,66 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nromito <nromito@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/07 12:08:38 by nromito           #+#    #+#             */
-/*   Updated: 2023/12/21 14:41:32 by nromito          ###   ########.fr       */
+/*   Created: 2023/12/27 15:58:53 by nromito           #+#    #+#             */
+/*   Updated: 2023/12/28 16:09:53 by nromito          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	find_newline(char *s)
-{
-	int	i;
-
-	i = 0;
-	if (s == NULL)
-		return (0);
-	while (s[i] != '\0' && s[i] != '\n')
-		i++;
-	if(s[i] == '\n')
-		i++;
-	return (i);
-}
-
-char	*str_join_mod(char *str, char *buf)
+char	*ft_strjoin(const char *s1, const char *s2)
 {
 	char	*join;
 	size_t	len1;
 	size_t	len2;
 	size_t	i;
 
-	len1 = ft_strlen(str);
-	len2 = ft_strlen(buf);
-	join = ft_calloc(len1 + len2 + 1, 1);
-	if (join == NULL)
-		return (NULL);
-	i = -1;
-	if (str == NULL)
+	if (s1 && s2)
 	{
-		while (buf[++i])
-			join[len1++] = buf[i];
+		len1 = ft_strlen(s1);
+		len2 = ft_strlen(s2);
+		join = malloc(sizeof(char) * (len1 + len2 + 1));
+		if (join == NULL)
+			return (NULL);
+		i = -1;
+		while (s1[++i])
+			join[i] = s1[i];
+		i = -1;
+		while (s2[++i])
+		{
+			join[len1] = s2[i];
+			len1++;
+		}
+		join[len1] = '\0';
 		return (join);
 	}
-	while (str[++i])
-		join[i] = str[i];
-	i = -1;
-	while (buf[++i])
-		join[len1++] = buf[i];
-	return (join);
+	return (NULL);
 }
 
-size_t len_str(char *s)
+char	*ft_strchr(const char *s, int c)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
-	if (s == NULL)
-		return (0);
-	while(s[i] != '\0' && s[i] != '\n')
+	while (s[i] != '\0')
+	{
+		if (s[i] == c)
+			return ((char *)s + i);
 		i++;
-	return(i);
+	}
+	if (s[i] == c)
+		return ((char *)s + i);
+	return (0);
 }
 
-size_t	ft_strlen(char *s)
+size_t	ft_strlen(const char *s)
 {
 	size_t	i;
 
 	i = 0;
-	if (!s)
-		return (0);
 	while (s[i] != '\0')
 		i++;
 	return (i);
-}
-
-char	*str_dup_mod(char *raw_str, int idx)
-{
-	char			*st;
-	int				i;
-	int				j;
-
-	j = 1;
-	if (!raw_str[0])
-		j = 0;
-	st = ft_calloc(idx + j, sizeof(char));
-	if (!st)
-		return (NULL);
-	i = 0;
-	while (i < idx)
-	{
-		st[i] = raw_str[i];
-		i++;
-	}
-	return (st);
-}
-
-char	*ft_strdup(char *raw_str)
-{
-	char			*st;
-	unsigned int	i;
-
-	st = ft_calloc(ft_strlen(raw_str) + 1, 1);
-	if (!st)
-		return (NULL);
-	i = 0;
-	while (raw_str[i] != '\0')
-	{
-		st[i] = raw_str[i];
-		i++;
-	}
-	st[i] = '\0';
-	// if (!st[0])
-	// {
-	// 	free (st);
-	// 	return (NULL);
-	// }
-	return (st);
 }
 
 void	*ft_calloc(size_t nmemb, size_t size)
@@ -136,30 +82,3 @@ void	*ft_calloc(size_t nmemb, size_t size)
 		((char *)a)[i++] = 0;
 	return (a);
 }
-
-// char	*ft_substr(char *str, unsigned int idx, size_t len)
-// {
-// 	char	*sub;
-// 	size_t	i;
-
-// 	i = -1;
-// 	if (idx > len_str(str))
-// 	{
-// 		sub = malloc(sizeof(char) * 1);
-// 		if (sub == NULL)
-// 			return (NULL);
-// 		*sub = '\0';
-// 		return (sub);
-// 	}
-// 	str += idx;
-// 	if (len_str(str) <= len)
-// 		sub = malloc(sizeof(char) * len_str(str) + 1);
-// 	else
-// 		sub = malloc(sizeof(char) * len + 1);
-// 	if (sub == NULL)
-// 		return (NULL);
-// 	while (str[++i] && i < len)
-// 		sub[i] = str[i];
-// 	sub[i] = '\0';
-// 	return (sub);
-// }

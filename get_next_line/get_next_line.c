@@ -5,131 +5,150 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nromito <nromito@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/07 12:08:27 by nromito           #+#    #+#             */
-/*   Updated: 2023/12/21 15:23:18 by nromito          ###   ########.fr       */
+/*   Created: 2023/12/27 15:58:47 by nromito           #+#    #+#             */
+/*   Updated: 2024/01/01 17:20:15 by nromito          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
-#include <string.h>
 // #include "get_next_line_utils.c"
 
-char	*free_and_null_all(char *buf, char **str)
+char	*join_the_party(char *str, char *buf)
 {
-	free (buf);
-	return (NULL);
-}
-
-size_t	funz_new_line(const char *str)
-{
-	int	i;
+	char	*t;
+	int		i;
 
 	i = 0;
-	while (str[i])
+	if (str == NULL)
 	{
-		if (str[i] == '\n' || str[i] == '\0')
-			return (1);
-		i++;
+		t = malloc(sizeof(char) * ft_strlen(buf) + 1);
+		if (t == NULL)
+			return (NULL);
+		while (buf[i] != '\0')
+		{
+			t[i] = buf[i];
+			i++;
+		}
+		t[i] = '\0';
+		return (t);
 	}
-	return (0);
+	t = ft_strjoin(str, buf);
+	if (t == NULL)
+		return (NULL);
+	free (str);
+	return (t);
 }
 
-void	*create_str(char *str, int fd)
+char	*read_line(char *str, char *buf, int fd)
 {
-	int		char_read;
-	char	*buf;
-	char	*raw_str;
+	int		check;
 
-	buf = ft_calloc(BUFFER_SIZE + 1, 1);
-	if (!buf)
-		return (NULL);
-	if (str && str[0] == '\n')
-		str++;
-	while (1)
+	check = 1;
+	while (check > 0)
 	{
-		char_read = read(fd, buf, BUFFER_SIZE);
-		if (!char_read)
-		{
-			if (str == NULL)
-				return (NULL);
-				//free (raw_str);
-			raw_str = str_dup_mod(str, ft_strlen(str));
+		check = read(fd, buf, BUFFER_SIZE);
+		if (check < 0)
+			return (NULL);
+		if (check == 0)
 			break ;
-		}
-		//free (raw_str);
-		raw_str = str_join_mod(str, buf);
-		str = raw_str;
-		if (funz_new_line(str))
+		buf[check] = '\0';
+		str = join_the_party(str, buf);
+		if (ft_strchr(str, '\n') != NULL)
 			break ;
 	}
-	free_and_null_all (buf, &str);
-	return (raw_str);
+	return (str);
+}
+
+char	*clean_the_static_and_steal(char *str)
+{
+	int		j;
+	int		k;
+	char	*new_str;
+
+	j = 0;
+	if (str == NULL)
+		return (NULL);
+	while (str[j] != '\n' && str[j] != '\0')
+		j++;
+	if (str[j] == '\0')
+	{
+		free (str);
+		return (NULL);
+	}
+	k = j + 1;
+	while (str[k] != '\0')
+		k++;
+	new_str = ft_calloc(k - j + 1, sizeof(char));
+	if (!new_str)
+		return (NULL);
+	k = 0;
+	while (str[j + 1] != '\0')
+		new_str[k++] = str[(j++) + 1];
+	free (str);
+	return (new_str);
+}
+
+char	*steal_line(char *str)
+{
+	int		i;
+	int		pass;
+	char	*temp;
+
+	i = 0;
+	pass = 0;
+	if (str == NULL || str[0] == '\0')
+		return (NULL);
+	while (str[pass] != '\n' && str[pass] != '\n')
+		pass++;
+	temp = ft_calloc(pass + 1, sizeof(char));
+	if (!temp)
+		return (NULL);
+	if (str[pass] == '\n')
+		pass++;
+	while (i < pass && str[i] != '\0')
+	{
+		temp[i] = str[i];
+		i++;
+	}
+	return (temp);
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*str;
-	char		*tmp;
-	char		*new_line;
-	char		*raw_str;
-	int			idx;
+	char		*buf;
+	char		*out;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		free(str);
+		free (str);
 		str = NULL;
 		return (NULL);
 	}
-	raw_str = create_str(str, fd);
-	if (!raw_str[0] && !str[0])
-	{
-		// free_and_null_all(raw_str, &str);
-		free (str);
-		str = NULL;
-		return(NULL);
-	}
-	idx = find_newline(raw_str);
-	new_line = str_dup_mod(raw_str, idx);
-	free(str);
-	str = ft_strdup(raw_str + len_str(new_line));
-	if (!*new_line)
-	{
-		if (str != NULL)
-			free(str);
-		str = NULL;
-	}
-	// str = tmp;
-	free(raw_str);
-	return (new_line);
+	buf = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	if (!buf)
+		return (NULL);
+	str = read_line(str, buf, fd);
+	free (buf);
+	buf = NULL;
+	out = steal_line(str);
+	str = clean_the_static_and_steal(str);
+	return (out);
 }
-	// ritorna la prima parte di stringa e libera str da quella memoria,
-	// salva in una variabile temporanea la seconda parte di stringa dopo \n,  
-	
-int	main()
-{
-	char *risultato;
-	int	i = 0;
-	int fd = open("text.txt", O_RDWR);
-	while (i < 11)
-	{
-		risultato = get_next_line(fd);
-		printf("%s", risultato);
-		free(risultato);
-		i++;	
-	}
-	// risultato = get_next_line(fd);
-	// printf("%s", risultato);
-	// free (risultato);
 
-	// risultato = get_next_line(fd);
-	// printf("%s", risultato);
-	// free (risultato);
-
-	// risultato = get_next_line(fd);
-	// printf("%s", risultato);
-	// free (risultato);
-		
-	close(fd);
-	return (0);
-}
+// int	main()
+// {
+// 	char *risultato;
+// 	int	i = 0;
+// 	int fd = open("text.txt", O_RDONLY);
+// 	while (i < 133)
+// 	{
+// 		risultato = get_next_line(fd);
+// 		printf("%s", risultato);
+// 		free(risultato);
+// 		i++;	
+// 	}
+// 	close (fd);
+// 	return (0);
+// }
